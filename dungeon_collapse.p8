@@ -1,0 +1,94 @@
+pico-8 cartridge // http://www.pico-8.com
+version 42
+__lua__
+--main
+function _init()
+	c=ichunck()
+	chck=nil
+	while not chck	do
+		chck=wfc(c)
+	end
+	
+end
+
+function _draw()
+	cls(0)
+	for x,l in pairs(chck) do
+	 for y,t in pairs(l) do
+	 	v=t[1]
+			val=tiles[v]	
+			spr(val.sp,x*8,y*8,1,1,val.fx,val.fy)
+	 end
+	end
+end
+-->8
+--wave function collapse
+tiles={}
+tiles.none={sp=0}
+tiles.floor={sp=1}
+tiles.wall_v={sp=2}
+tiles.wall_h={sp=3}
+tiles.corner_nw={sp=4}
+tiles.corner_ne={sp=4,fx=true}
+tiles.corner_sw={sp=4,fy=true}
+tiles.corner_se={sp=4,fx=true,fy=true}
+
+
+function ichunck()
+	chck = {}
+	for x=0,15do
+		chck[x]={}
+		for y=0,15do
+			chck[x][y]={}
+			for k,_ in pairs(tiles)do
+				add(chck[x][y],k)
+			end
+		end
+	end
+	return chck
+end
+
+function wfc(chck)
+	lt=cchunk(chck)
+	while type(lt) == "table"do
+		x,y=unpack(rnd(lt))
+		t=rnd(chck[x][y])
+		chck[x][y]={t}
+		lt=cchunk(chck)
+	end
+	
+	if lt==1 then 
+		return chck
+	else return nil end
+end
+
+function cchunk(chck)
+	lt=nil
+	n=nil
+	for x,l in pairs(chck)do
+		for y,t in pairs(l)do
+			if #t == 0 then return -1
+			elseif #t~=1 then 
+				if n==nil or #t<n then
+					n=#t lt={{x,y}}
+				elseif n==#t then
+					add(lt,{x,y})
+				end
+			end
+		end
+	end
+	
+	if lt==nil then return 1
+	else return lt end
+end
+
+
+__gfx__
+00000000666666665555666666666666555555550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000666666665555666666666666555555550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000666666665555666666666666555555550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000666666665555666666666666555555550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000666666665555666655555555555566660000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000666666665555666655555555555566660000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000666666665555666655555555555566660000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000666666665555666655555555555566660000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
